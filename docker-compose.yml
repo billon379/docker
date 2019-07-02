@@ -1,0 +1,84 @@
+#docker-compose版本
+version: '3'
+
+#定义所有服务
+services:
+
+  #nginx服务
+  nginx:
+    image: billon/nginx-alpine:1.15.5
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ~/docker/nginx/conf.d/:/etc/nginx/conf.d/:ro
+
+  #redis服务
+  redis:
+    image: billon/redis-alpine:4.0.11
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - '6379:6379'
+    volumes:
+      - ~/docker/redis/redis.conf:/etc/redis.conf:ro
+      - ~/docker/redis/data:/data
+
+  #mysql服务
+  mysql:
+    image: billon/mysql-debian:5.7
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_ROOT_PASSWORD_FILE=~/docker/mysql/password
+    ports:
+      - '3306:3306'
+    volumes:
+      - ~/docker/mysql/data:/var/lib/mysql
+
+  #jenkins服务
+  jenkins:
+    image: billon/jenkins-alpine:2.60.3
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - '50000:50000'
+      - '8080:8080'
+    volumes:
+      - ~/docker/jenkins/:/var/jenkins_home
+
+  #gitlab服务
+  gitlab:
+    image: billon/gitlab-ubuntu:ce
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.example.com'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2222
+    hostname: 'gitlab.example.com'
+    ports:
+      - '8081:80'
+      - '2222:22'
+    volumes:
+      - ~/docker/gitlab/config:/etc/gitlab
+      - ~/docker/gitlab/logs:/var/log/gitlab
+      - ~/docker/gitlab/data:/var/opt/gitlab
+
+  #nexus服务
+  nexus:
+    image: billon/nexus-centos:3
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - '8090:8081'
+    volumes:
+      - ~/docker/nexus/nexus-data:/nexus-data
