@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM alpine:3.7
+FROM alpine:3.9
 
 # A few reasons for installing distribution-provided OpenJDK:
 #
@@ -29,10 +29,9 @@ RUN { \
 	} > /usr/local/bin/docker-java-home \
 	&& chmod +x /usr/local/bin/docker-java-home
 ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
-ENV PATH $PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
-
-ENV JAVA_VERSION 8u151
-ENV JAVA_ALPINE_VERSION 8.151.12-r0
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
+ENV JAVA_VERSION 8u191
+ENV JAVA_ALPINE_VERSION 8.191.12-r0
 
 RUN set -x \
 	&& apk add --no-cache \
